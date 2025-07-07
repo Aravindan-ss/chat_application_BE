@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import { Request, Response, NextFunction } from "express";
 import * as dotenv from "dotenv";
+import { CONSTANT_MESSAGE } from "../common/constant";
 dotenv.config();
 
 const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key";
@@ -15,8 +16,8 @@ export const userAuthentication = (
 
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
     return res.status(401).json({
-      status: "error",
-      message: "Authorization token missing or invalid",
+      status: CONSTANT_MESSAGE.STATUS.ERROR,
+      message: CONSTANT_MESSAGE.USERDETAILS.AUTHENTICATION_TOKEN_INVALID,
     });
   }
 
@@ -31,8 +32,8 @@ export const userAuthentication = (
     // eslint-disable-next-line
   } catch (err: any) {
     return res.status(403).json({
-      status: "error",
-      message: "Invalid or expired token",
+      status: CONSTANT_MESSAGE.STATUS.ERROR,
+      message: CONSTANT_MESSAGE.USERDETAILS.AUTHENTICATION_FAILED,
     });
   }
 };

@@ -1,7 +1,7 @@
 import express from "express";
 import * as dotenv from "dotenv";
-import routes from "./routes/route";
-import { connectDB } from "./config/db";
+import routes from "./src/routes/route";
+import { connectDB } from "./src/config/db";
 import cors from "cors";
 import http from "http";
 import { Server } from "socket.io";
@@ -12,6 +12,7 @@ const port = process.env.PORT || 3001;
 
 const server = http.createServer(app);
 const io = new Server(server, {
+  path: "/ws",
   cors: {
     origin: "*",
     methods: ["GET", "POST"],
@@ -21,11 +22,11 @@ const io = new Server(server, {
 const users: Record<string, string> = {};
 
 io.on("connection", (socket) => {
-  console.log("New client connected:", socket.id);
+  console.info("[INFO] New client connected:", socket.id);
 
   socket.on("register", (userName: string) => {
     users[userName] = socket.id;
-    console.log(`User registered: ${userName} => ${socket.id}`);
+    console.info(`[INFO] User registered: ${userName} => ${socket.id}`);
   });
 
   socket.on("privateMessage", ({ toUserId, fromUserId, message }) => {
@@ -37,9 +38,9 @@ io.on("connection", (socket) => {
         sender: fromUserId,
         timestamp: new Date(),
       });
-      console.log(`${fromUserId} → ${toUserId}: ${message}`);
+      console.info(`[INFO] ${fromUserId} → ${toUserId}: ${message}`);
     } else {
-      console.log(`User ${toUserId} not connected`);
+      console.info(`[INFO] User ${toUserId} not connected`);
     }
   });
 
@@ -49,7 +50,7 @@ io.on("connection", (socket) => {
     );
     if (disconnectedUser) {
       delete users[disconnectedUser];
-      console.log(`Disconnected: ${disconnectedUser}`);
+      console.info(`[INFO] Disconnected: ${disconnectedUser}`);
     }
   });
 });
@@ -67,6 +68,6 @@ app.get("/api/health", async (req, res) => {
 
 // Start server
 server.listen(port, () => {
-  console.log(`Server running on http://localhost:${port}`);
+  console.info(`[INFO] Server running on http://localhost:${port}`);
   connectDB();
 });
