@@ -10,13 +10,11 @@ router.get("/users", async (req, res) => {
     // eslint-disable-next-line
   } catch (error: any) {
     console.error("[ERROR] in setting up the user");
-    return res
-      .status(400)
-      .send({
-        statusCode: 400,
-        status: CONSTANT_MESSAGE.STATUS.ERROR,
-        message: error.message,
-      });
+    return res.status(400).send({
+      statusCode: 400,
+      status: CONSTANT_MESSAGE.STATUS.ERROR,
+      message: error.message,
+    });
   }
 });
 
